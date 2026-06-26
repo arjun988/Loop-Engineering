@@ -7,15 +7,15 @@ echo ""
 
 # Check if Python package is installed
 echo "Checking Python package..."
-if command -v loop-engineering-mcp &> /dev/null; then
+if command -v loop-mcp &> /dev/null; then
     echo "✅ Python package installed"
-    loop-engineering-mcp --version 2>&1 || echo "   (Version check skipped - MCP server)"
+    loop-mcp --version 2>&1 || echo "   (Version check skipped - MCP server)"
 else
     if python3 -c "import loop_engineering_mcp" 2>/dev/null; then
         echo "✅ Python package importable"
     else
         echo "❌ Python package not found"
-        echo "   Run: pip install loop-engineering-mcp"
+        echo "   Run: pip install loop-mcp"
     fi
 fi
 
@@ -24,11 +24,11 @@ echo ""
 # Check if TypeScript package is available
 echo "Checking TypeScript package..."
 if command -v npx &> /dev/null; then
-    if npm list -g loop-engineering-mcp &> /dev/null; then
+    if npm list -g loop-mcp &> /dev/null; then
         echo "✅ TypeScript package installed globally"
     else
         echo "⚠️  TypeScript package not installed globally"
-        echo "   Run: npm install -g loop-engineering-mcp"
+        echo "   Run: npm install -g loop-mcp"
     fi
 else
     echo "⚠️  npm not found (needed for TypeScript version)"
@@ -75,7 +75,7 @@ echo ""
 echo "====================================================="
 
 # Summary
-if command -v loop-engineering-mcp &> /dev/null || python3 -c "import loop_engineering_mcp" 2>/dev/null; then
+if command -v loop-mcp &> /dev/null || python3 -c "import loop_engineering_mcp" 2>/dev/null; then
     echo "✅ Installation verified!"
     echo ""
     echo "Next steps:"

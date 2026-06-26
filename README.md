@@ -92,12 +92,12 @@ Total: 0 minutes/day (runs while you sleep)
 
 **Install once, run anywhere:**
 ```bash
-pip install loop
+pip install loop-mcp
 ```
 
 **Or use directly (no installation):**
 ```bash
-uvx loop
+loop-mcp
 ```
 
 ### Option 2: TypeScript/Node
@@ -109,7 +109,7 @@ npm install -g loop
 
 **Or use directly:**
 ```bash
-npx loop
+npx loop-mcp
 ```
 
 ### Option 3: From Source (Local Development)
@@ -145,7 +145,7 @@ Create or edit `.cursor/mcp.json` in your project:
   "mcpServers": {
     "loop-engineering": {
       "command": "uvx",
-      "args": ["loop"]
+      "args": ["loop-mcp"]
     }
   }
 }
@@ -160,7 +160,7 @@ Create or edit `.kiro/settings/mcp.json`:
   "mcpServers": {
     "loop-engineering": {
       "command": "uvx",
-      "args": ["loop"]
+      "args": ["loop-mcp"]
     }
   }
 }
@@ -177,7 +177,7 @@ Create or edit `.kiro/settings/mcp.json`:
   "mcpServers": {
     "loop-engineering": {
       "command": "uvx",
-      "args": ["loop"]
+      "args": ["loop-mcp"]
     }
   }
 }
@@ -459,10 +459,10 @@ export LOOP_WORKSPACE="/path/to/project"
 
 ```bash
 # Check if installed
-uvx loop --version
+loop-mcp --version
 
 # Or for npm
-npx loop
+npx loop-mcp
 ```
 
 ### Tools Not Available in AI Agent

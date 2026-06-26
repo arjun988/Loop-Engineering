@@ -7,13 +7,13 @@ Python implementation of the Loop Engineering MCP server.
 ### Using uvx (recommended - no installation needed)
 
 ```bash
-uvx loop-engineering-mcp
+uvx loop-mcp
 ```
 
 ### Using pip
 
 ```bash
-pip install loop-engineering-mcp
+pip install loop-mcp
 ```
 
 ## Configuration
@@ -26,7 +26,7 @@ Add to your MCP configuration file:
   "mcpServers": {
     "loop-engineering": {
       "command": "uvx",
-      "args": ["loop-engineering-mcp"]
+      "args": ["loop-mcp"]
     }
   }
 }
@@ -38,7 +38,7 @@ Add to your MCP configuration file:
   "mcpServers": {
     "loop-engineering": {
       "command": "uvx",
-      "args": ["loop-engineering-mcp"]
+      "args": ["loop-mcp"]
     }
   }
 }
@@ -53,7 +53,7 @@ Add to your MCP configuration file:
   "mcpServers": {
     "loop-engineering": {
       "command": "uvx",
-      "args": ["loop-engineering-mcp"]
+      "args": ["loop-mcp"]
     }
   }
 }

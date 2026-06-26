@@ -7,13 +7,13 @@ TypeScript/Node implementation of the Loop Engineering MCP server.
 ### Using npx (recommended - no installation needed)
 
 ```bash
-npx loop-engineering-mcp
+npx loop-mcp
 ```
 
 ### Using npm
 
 ```bash
-npm install -g loop-engineering-mcp
+npm install -g loop-mcp
 ```
 
 ## Configuration
@@ -26,7 +26,7 @@ Add to your MCP configuration file:
   "mcpServers": {
     "loop-engineering": {
       "command": "npx",
-      "args": ["loop-engineering-mcp"]
+      "args": ["loop-mcp"]
     }
   }
 }
@@ -38,7 +38,7 @@ Add to your MCP configuration file:
   "mcpServers": {
     "loop-engineering": {
       "command": "npx",
-      "args": ["loop-engineering-mcp"]
+      "args": ["loop-mcp"]
     }
   }
 }
@@ -53,7 +53,7 @@ Add to your MCP configuration file:
   "mcpServers": {
     "loop-engineering": {
       "command": "npx",
-      "args": ["loop-engineering-mcp"]
+      "args": ["loop-mcp"]
     }
   }
 }

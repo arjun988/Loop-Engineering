@@ -38,7 +38,7 @@ case $choice in
         pip install -e ".[dev]"
         echo "✅ Python package installed"
         echo ""
-        echo "Test with: loop-engineering-mcp --version"
+        echo "Test with: loop-mcp --version"
         ;;
     2)
         echo ""
@@ -49,7 +49,7 @@ case $choice in
         npm link
         echo "✅ TypeScript package installed"
         echo ""
-        echo "Test with: loop-engineering-mcp"
+        echo "Test with: loop-mcp"
         ;;
     3)
         echo ""

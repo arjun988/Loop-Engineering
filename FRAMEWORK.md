@@ -45,13 +45,13 @@ If you fail any condition, **stop here** and use manual prompting instead.
 
 ```bash
 # uvx automatically downloads and runs the package
-uvx loop
+loop-mcp
 ```
 
 **Or install permanently:**
 
 ```bash
-pip install loop
+pip install loop-mcp
 ```
 
 **Then add to your MCP configuration:**
@@ -62,7 +62,7 @@ For **Cursor**, add to `.cursor/mcp.json`:
   "mcpServers": {
     "loop-engineering": {
       "command": "uvx",
-      "args": ["loop"]
+      "args": ["loop-mcp"]
     }
   }
 }
@@ -74,7 +74,7 @@ For **Kiro**, add to `.kiro/settings/mcp.json`:
   "mcpServers": {
     "loop-engineering": {
       "command": "uvx",
-      "args": ["loop"]
+      "args": ["loop-mcp"]
     }
   }
 }
@@ -86,7 +86,7 @@ For **Claude Desktop**, add to `~/Library/Application Support/Claude/claude_desk
   "mcpServers": {
     "loop-engineering": {
       "command": "uvx",
-      "args": ["loop"]
+      "args": ["loop-mcp"]
     }
   }
 }
@@ -99,7 +99,7 @@ For **Claude Desktop**, add to `~/Library/Application Support/Claude/claude_desk
 **Using npx (no manual install needed):**
 
 ```bash
-npx loop
+npx loop-mcp
 ```
 
 **Or install globally:**
@@ -116,7 +116,7 @@ For **Cursor**, add to `.cursor/mcp.json`:
   "mcpServers": {
     "loop-engineering": {
       "command": "npx",
-      "args": ["loop"]
+      "args": ["loop-mcp"]
     }
   }
 }
@@ -128,7 +128,7 @@ For **Kiro**, add to `.kiro/settings/mcp.json`:
   "mcpServers": {
     "loop-engineering": {
       "command": "npx",
-      "args": ["loop"]
+      "args": ["loop-mcp"]
     }
   }
 }
@@ -144,10 +144,10 @@ For **Claude Desktop**, use the same configuration pattern as above but with `np
 
 ```bash
 # Python (recommended)
-uvx loop
+loop-mcp
 
 # OR Node
-npx loop
+npx loop-mcp
 ```
 
 ### 2. Add to Your AI Agent Config

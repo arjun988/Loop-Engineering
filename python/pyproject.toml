@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "loop"
+name = "loop-mcp"
 version = "0.1.0"
 description = "MCP server for automated loop engineering in AI coding workflows"
 readme = "README.md"
@@ -46,7 +46,7 @@ Issues = "https://github.com/yourusername/loop-engineering/issues"
 
 [project.scripts]
 loop-mcp = "loop_engineering_mcp.__main__:main"
-loop-engineering-worker = "loop_engineering_mcp.worker:main"
+loop-mcp-worker = "loop_engineering_mcp.worker:main"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

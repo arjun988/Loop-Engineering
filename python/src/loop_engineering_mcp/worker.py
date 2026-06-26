@@ -41,7 +41,7 @@ async def run_worker():
 
 
 def main():
-    """CLI entry point for loop-engineering-worker."""
+    """CLI entry point for loop-mcp-worker."""
     try:
         asyncio.run(run_worker())
     except KeyboardInterrupt:

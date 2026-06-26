@@ -6,13 +6,13 @@ Get Loop Engineering running in 5 minutes.
 
 ### Option A: Python (Recommended)
 ```bash
-uvx loop
+loop-mcp
 ```
 No installation needed! `uvx` downloads and runs automatically.
 
 ### Option B: TypeScript/Node
 ```bash
-npx loop
+npx loop-mcp
 ```
 
 ### Option C: From Source
@@ -39,7 +39,7 @@ Create `.cursor/mcp.json` in your project:
   "mcpServers": {
     "loop-engineering": {
       "command": "uvx",
-      "args": ["loop"]
+      "args": ["loop-mcp"]
     }
   }
 }
@@ -53,7 +53,7 @@ Create `.kiro/settings/mcp.json` in your project:
   "mcpServers": {
     "loop-engineering": {
       "command": "uvx",
-      "args": ["loop"]
+      "args": ["loop-mcp"]
     }
   }
 }
@@ -70,7 +70,7 @@ Create `.kiro/settings/mcp.json` in your project:
   "mcpServers": {
     "loop-engineering": {
       "command": "uvx",
-      "args": ["loop"]
+      "args": ["loop-mcp"]
     }
   }
 }
@@ -156,10 +156,10 @@ AI: 📊 State for ci-triage:
 Check if the command works:
 ```bash
 # Python
-uvx loop --version
+loop-mcp --version
 
 # Node
-npx loop
+npx loop-mcp
 ```
 
 ### Tools Not Available

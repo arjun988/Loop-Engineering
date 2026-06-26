@@ -230,8 +230,8 @@ python/
 
 Build:   python -m build
 Publish: twine upload dist/*
-Install: pip install loop-engineering-mcp
-Run:     uvx loop-engineering-mcp
+Install: pip install loop-mcp
+Run:     uvx loop-mcp
 ```
 
 ### TypeScript (NPM)
@@ -244,8 +244,8 @@ typescript/
 
 Build:   npm run build
 Publish: npm publish
-Install: npm install -g loop-engineering-mcp
-Run:     npx loop-engineering-mcp
+Install: npm install -g loop-mcp
+Run:     npx loop-mcp
 ```
 
 ## Development Workflow

@@ -37,7 +37,7 @@ switch ($choice) {
         pip install -e ".[dev]"
         Write-Host "✅ Python package installed" -ForegroundColor Green
         Write-Host ""
-        Write-Host "Test with: loop-engineering-mcp --version"
+        Write-Host "Test with: loop-mcp --version"
     }
     "2" {
         Write-Host ""
@@ -48,7 +48,7 @@ switch ($choice) {
         npm link
         Write-Host "✅ TypeScript package installed" -ForegroundColor Green
         Write-Host ""
-        Write-Host "Test with: loop-engineering-mcp"
+        Write-Host "Test with: loop-mcp"
     }
     "3" {
         Write-Host ""

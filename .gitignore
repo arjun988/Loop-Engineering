@@ -1,3 +1,7 @@
+# Secrets (never commit)
+.pypirc
+.npmrc
+
 # Python
 __pycache__/
 *.py[cod]

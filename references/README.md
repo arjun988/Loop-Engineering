@@ -23,12 +23,12 @@ This repository provides an **MCP (Model Context Protocol) server** that integra
 
 **Python (recommended):**
 ```bash
-uvx loop-engineering-mcp
+uvx loop-mcp
 ```
 
 **Node/TypeScript:**
 ```bash
-npx loop-engineering-mcp
+npx loop-mcp
 ```
 
 ### Configure Your AI Agent
@@ -40,7 +40,7 @@ Add to `.cursor/mcp.json`, `.kiro/settings/mcp.json`, or Claude Desktop config:
   "mcpServers": {
     "loop-engineering": {
       "command": "uvx",
-      "args": ["loop-engineering-mcp"]
+      "args": ["loop-mcp"]
     }
   }
 }
