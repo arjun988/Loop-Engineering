@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "loop-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "MCP server for automated loop engineering in AI coding workflows"
 readme = "README.md"
 requires-python = ">=3.10"
