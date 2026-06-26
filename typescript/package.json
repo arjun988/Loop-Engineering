@@ -1,11 +1,11 @@
 {
-  "name": "loop-engineering-mcp",
+  "name": "loop",
   "version": "0.1.0",
   "description": "MCP server for automated loop engineering in AI coding workflows",
   "main": "dist/index.js",
   "bin": {
-    "loop-engineering-mcp": "dist/index.js",
-    "loop-engineering-worker": "dist/worker.js"
+    "loop-mcp": "dist/index.js",
+    "loop-worker": "dist/worker.js"
   },
   "type": "module",
   "scripts": {

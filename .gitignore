@@ -48,3 +48,5 @@ build/
 coverage/
 .nyc_output/
 *.log
+
+\IMPLEMENTATION_COMPLETE.md
