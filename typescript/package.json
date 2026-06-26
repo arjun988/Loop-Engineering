@@ -21,7 +21,21 @@
     "ai",
     "coding",
     "automation",
-    "loop-engineering"
+    "loop-engineering",
+    "mcp-server",
+    "mcp-client",
+    "mcp-protocol",
+    "mcp-agent",
+    "mcp-agent-framework",
+    "mcp-agent-framework-sdk",
+    "mcp-agent-framework-sdk-typescript",
+    "mcp-agent-framework-sdk-typescript-mcp-server",
+    "mcp-agent-framework-sdk-typescript-mcp-client",
+    "agent"
+  ],
+  "files": [
+    "dist",
+    "README.md"
   ],
   "author": "Loop Engineering Contributors",
   "license": "MIT",

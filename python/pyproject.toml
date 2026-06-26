@@ -9,7 +9,7 @@ description = "MCP server for automated loop engineering in AI coding workflows"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
-keywords = ["mcp", "ai", "coding", "automation", "loop-engineering"]
+keywords = ["mcp", "ai", "coding", "automation", "loop-engineering","agents"]
 authors = [
     { name = "Loop Engineering Contributors" }
 ]
@@ -39,10 +39,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/loop-engineering"
-Documentation = "https://github.com/yourusername/loop-engineering#readme"
-Repository = "https://github.com/yourusername/loop-engineering"
-Issues = "https://github.com/yourusername/loop-engineering/issues"
+Homepage = "https://github.com/arjun988/Loop-Engineering"
+Documentation = "https://github.com/arjun988/Loop-Engineering#readme"
+Repository = "https://github.com/arjun988/Loop-Engineering"
+Issues = "https://github.com/arjun988/Loop-Engineering/issues"
 
 [project.scripts]
 loop-mcp = "loop_engineering_mcp.__main__:main"
