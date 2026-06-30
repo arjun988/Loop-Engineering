@@ -94,60 +94,12 @@ For **Claude Desktop**, add to `~/Library/Application Support/Claude/claude_desk
 
 ---
 
-### Option 2: Node/TypeScript
-
-**Using npx (no manual install needed):**
-
-```bash
-npx loop-mcp
-```
-
-**Or install globally:**
-
-```bash
-npm install -g loop
-```
-
-**Then add to your MCP configuration:**
-
-For **Cursor**, add to `.cursor/mcp.json`:
-```json
-{
-  "mcpServers": {
-    "loop-engineering": {
-      "command": "npx",
-      "args": ["loop-mcp"]
-    }
-  }
-}
-```
-
-For **Kiro**, add to `.kiro/settings/mcp.json`:
-```json
-{
-  "mcpServers": {
-    "loop-engineering": {
-      "command": "npx",
-      "args": ["loop-mcp"]
-    }
-  }
-}
-```
-
-For **Claude Desktop**, use the same configuration pattern as above but with `npx` command.
-
----
-
 ## Quick Start (3 minutes)
 
 ### 1. Install the MCP Server
 
 ```bash
-# Python (recommended)
-loop-mcp
-
-# OR Node
-npx loop-mcp
+uvx loop-mcp
 ```
 
 ### 2. Add to Your AI Agent Config

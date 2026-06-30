@@ -33,20 +33,6 @@ loop-engineering/
 │   │
 │   └── tests/                     # Python tests (to be added)
 │
-├── typescript/                    # TypeScript MCP Server
-│   ├── package.json              # NPM package configuration
-│   ├── tsconfig.json             # TypeScript configuration
-│   ├── README.md                 # TypeScript-specific docs
-│   │
-│   ├── src/
-│   │   ├── index.ts              # Entry point
-│   │   ├── server.ts             # MCP server implementation
-│   │   ├── loop-manager.ts       # Loop CRUD operations
-│   │   ├── skill-manager.ts      # Skill template management
-│   │   └── state-manager.ts      # State tracking & metrics
-│   │
-│   └── tests/                    # TypeScript tests (to be added)
-│
 └── shared/                       # Shared resources
     └── skills/                   # Pre-built skill templates
         ├── ci-triage.md         # CI failure triage
@@ -86,18 +72,6 @@ loop-engineering/
 | `loop_manager.py` | Create/start/stop/list loops |
 | `skill_manager.py` | Manage skill templates |
 | `state_manager.py` | Track state, metrics, lessons |
-
-### TypeScript Package
-
-| File | Purpose |
-|------|---------|
-| `package.json` | Package metadata, dependencies |
-| `tsconfig.json` | TypeScript compiler config |
-| `index.ts` | CLI entry point |
-| `server.ts` | MCP server, tool definitions |
-| `loop-manager.ts` | Create/start/stop/list loops |
-| `skill-manager.ts` | Manage skill templates |
-| `state-manager.ts` | Track state, metrics, lessons |
 
 ### Skill Templates
 
@@ -146,7 +120,7 @@ user-project/
 │    Loop Engineering MCP Server      │
 │                                     │
 │  ┌──────────────────────────────┐  │
-│  │  server.py / server.ts       │  │
+│  │  server.py                   │  │
 │  │  - Registers 11 tools        │  │
 │  │  - Handles tool calls        │  │
 │  └──────────┬───────────────────┘  │
@@ -234,20 +208,6 @@ Install: pip install loop-mcp
 Run:     uvx loop-mcp
 ```
 
-### TypeScript (NPM)
-
-```
-typescript/
-  ├── src/
-  ├── package.json
-  └── tsconfig.json
-
-Build:   npm run build
-Publish: npm publish
-Install: npm install -g loop-mcp
-Run:     npx loop-mcp
-```
-
 ## Development Workflow
 
 1. **Clone Repository**
@@ -258,13 +218,8 @@ Run:     npx loop-mcp
 
 2. **Install Dependencies**
    ```bash
-   # Python
    cd python
    pip install -e ".[dev]"
-   
-   # TypeScript
-   cd typescript
-   npm install
    ```
 
 3. **Make Changes**
@@ -273,20 +228,12 @@ Run:     npx loop-mcp
 
 4. **Test**
    ```bash
-   # Python
    pytest
-   
-   # TypeScript
-   npm test
    ```
 
 5. **Build**
    ```bash
-   # Python
    python -m build
-   
-   # TypeScript
-   npm run build
    ```
 
 6. **Submit PR**
@@ -301,12 +248,7 @@ Run:     npx loop-mcp
 - `.python-version` - Python version (optional)
 - `pytest.ini` - Test configuration (optional)
 
-### TypeScript
-- `package.json` - Package metadata, scripts, dependencies
-- `tsconfig.json` - TypeScript compiler options
-- `.npmignore` - Files to exclude from NPM package
-
-### Both
+### General
 - `.gitignore` - Git ignore patterns
 - `README.md` - Package-specific documentation
 
@@ -339,6 +281,5 @@ loop-engineering/
 This structure is designed for:
 - ✅ Easy contribution
 - ✅ Clear separation of concerns
-- ✅ Both Python and TypeScript support
 - ✅ Extensibility
-- ✅ Package distribution (PyPI & NPM)
+- ✅ Package distribution (PyPI)

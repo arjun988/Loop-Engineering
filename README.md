@@ -6,7 +6,6 @@ Automate repetitive coding tasks with AI agents. Set up once, run forever.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 [![MCP](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://modelcontextprotocol.io)
 
 ---
@@ -100,19 +99,7 @@ pip install loop-mcp
 loop-mcp
 ```
 
-### Option 2: TypeScript/Node
-
-**Install globally:**
-```bash
-npm install -g loop
-```
-
-**Or use directly:**
-```bash
-npx loop-mcp
-```
-
-### Option 3: From Source (Local Development)
+### Option 2: From Source (Local Development)
 
 **Clone and install:**
 ```bash
@@ -120,14 +107,9 @@ npx loop-mcp
 git clone https://github.com/yourusername/loop-engineering
 cd loop-engineering
 
-# Python
+# Install Python package
 cd python
 pip install -e ".[dev]"
-
-# TypeScript
-cd typescript
-npm install
-npm run build
 ```
 
 ---
@@ -182,8 +164,6 @@ Create or edit `.kiro/settings/mcp.json`:
   }
 }
 ```
-
-**Using npm instead?** Replace `"uvx"` with `"npx"` in the command above.
 
 **Local development?** Use:
 ```json
@@ -312,28 +292,6 @@ pytest
 pytest --cov
 ```
 
-### TypeScript
-
-```bash
-# Navigate to typescript package
-cd typescript
-
-# Install dependencies
-npm install
-
-# Build
-npm run build
-
-# Run MCP server
-npm start
-
-# Development mode (watch)
-npm run dev
-
-# Run tests
-npm test
-```
-
 ### Testing the MCP Server
 
 1. **Install locally** (commands above)
@@ -363,14 +321,6 @@ loop-engineering/
 │   │       ├── verification_runner.py  # Test runner
 │   │       ├── github_client.py     # GitHub integration
 │   │       └── worker.py            # Background worker
-│   └── tests/
-│
-├── typescript/              # TypeScript MCP server
-│   ├── src/
-│   │   ├── server.ts
-│   │   ├── loop-manager.ts
-│   │   ├── skill-manager.ts
-│   │   └── state-manager.ts
 │   └── tests/
 │
 ├── shared/                  # Shared skill templates
@@ -460,9 +410,6 @@ export LOOP_WORKSPACE="/path/to/project"
 ```bash
 # Check if installed
 loop-mcp --version
-
-# Or for npm
-npx loop-mcp
 ```
 
 ### Tools Not Available in AI Agent

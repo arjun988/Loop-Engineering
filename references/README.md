@@ -4,7 +4,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 [![MCP](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://modelcontextprotocol.io)
 
 Based on the 14-step roadmap by Codez ([@0xCodez](https://x.com/0xCodez)) | [Original Article](https://x.com/0xCodez/status/2064374643729773029)
@@ -21,14 +20,9 @@ This repository provides an **MCP (Model Context Protocol) server** that integra
 
 ### Installation
 
-**Python (recommended):**
+**Python:**
 ```bash
 uvx loop-mcp
-```
-
-**Node/TypeScript:**
-```bash
-npx loop-mcp
 ```
 
 ### Configure Your AI Agent
@@ -103,13 +97,6 @@ loop-engineering/
 │       ├── loop_manager.py
 │       ├── skill_manager.py
 │       └── state_manager.py
-├── typescript/            # TypeScript MCP server
-│   ├── package.json
-│   └── src/
-│       ├── server.ts
-│       ├── loop-manager.ts
-│       ├── skill-manager.ts
-│       └── state-manager.ts
 └── shared/                # Skill templates
     └── skills/
         ├── ci-triage.md
@@ -123,7 +110,6 @@ loop-engineering/
 
 - **[FRAMEWORK.md](./FRAMEWORK.md)** - Complete implementation guide
 - **[Python README](./python/README.md)** - Python package docs
-- **[TypeScript README](./typescript/README.md)** - TypeScript package docs
 
 ---
 
@@ -564,15 +550,6 @@ pip install -e ".[dev]"
 pytest
 ```
 
-### TypeScript Package
-
-```bash
-cd typescript
-npm install
-npm run build
-npm start
-```
-
 ---
 
 ## Publishing
@@ -583,14 +560,6 @@ npm start
 cd python
 python -m build
 twine upload dist/*
-```
-
-### TypeScript (NPM)
-
-```bash
-cd typescript
-npm run build
-npm publish
 ```
 
 ---
@@ -635,7 +604,7 @@ MIT License - see [LICENSE](./LICENSE) file for details.
 
 ## Roadmap
 
-- [x] Core MCP server (Python & TypeScript)
+- [x] Core MCP server (Python)
 - [x] Basic loop management
 - [x] Skill templates
 - [x] State tracking

@@ -17,7 +17,7 @@ Found a bug? Have a feature request?
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/your-feature-name`
 3. Make your changes
-4. Test thoroughly (both Python and TypeScript if relevant)
+4. Test thoroughly
 5. Commit with clear messages: `git commit -m "feat: add new skill template"`
 6. Push: `git push origin feature/your-feature-name`
 7. Open a pull request
@@ -56,15 +56,6 @@ pip install -e ".[dev]"
 pytest
 ```
 
-### TypeScript
-
-```bash
-cd typescript
-npm install
-npm run build
-npm run dev  # for watch mode
-```
-
 ## Code Style
 
 ### Python
@@ -72,12 +63,6 @@ npm run dev  # for watch mode
 - Use Black for formatting: `black .`
 - Type hints where possible
 - Docstrings for public functions
-
-### TypeScript
-- Follow standard TypeScript conventions
-- Use Prettier for formatting
-- Explicit types preferred
-- JSDoc comments for public APIs
 
 ## Commit Messages
 
@@ -106,20 +91,11 @@ pytest
 pytest --cov  # with coverage
 ```
 
-### TypeScript
-```bash
-npm test
-```
-
 ### Manual Testing
 
 1. Install package locally:
    ```bash
-   # Python
    pip install -e ./python
-   
-   # TypeScript
-   cd typescript && npm link
    ```
 
 2. Configure in your AI agent (Cursor/Kiro/Claude)
@@ -142,7 +118,7 @@ npm test
 
 **PR Checklist:**
 - [ ] Code follows project style
-- [ ] Tests pass (Python & TypeScript if both affected)
+- [ ] Tests pass
 - [ ] Documentation updated
 - [ ] Commit messages follow convention
 - [ ] No merge conflicts

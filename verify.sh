@@ -21,33 +21,12 @@ fi
 
 echo ""
 
-# Check if TypeScript package is available
-echo "Checking TypeScript package..."
-if command -v npx &> /dev/null; then
-    if npm list -g loop-mcp &> /dev/null; then
-        echo "✅ TypeScript package installed globally"
-    else
-        echo "⚠️  TypeScript package not installed globally"
-        echo "   Run: npm install -g loop-mcp"
-    fi
-else
-    echo "⚠️  npm not found (needed for TypeScript version)"
-fi
-
-echo ""
-
 # Check directory structure
 echo "Checking project structure..."
 if [ -d "python/src/loop_engineering_mcp" ]; then
     echo "✅ Python source found"
 else
     echo "❌ Python source missing"
-fi
-
-if [ -d "typescript/src" ]; then
-    echo "✅ TypeScript source found"
-else
-    echo "❌ TypeScript source missing"
 fi
 
 if [ -d "shared/skills" ]; then

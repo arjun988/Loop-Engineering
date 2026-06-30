@@ -6,16 +6,11 @@ Get Loop Engineering running in 5 minutes.
 
 ### Option A: Python (Recommended)
 ```bash
-loop-mcp
+uvx loop-mcp
 ```
 No installation needed! `uvx` downloads and runs automatically.
 
-### Option B: TypeScript/Node
-```bash
-npx loop-mcp
-```
-
-### Option C: From Source
+### Option B: From Source
 ```bash
 # Clone repository
 git clone https://github.com/yourusername/loop-engineering
@@ -155,11 +150,7 @@ AI: 📊 State for ci-triage:
 
 Check if the command works:
 ```bash
-# Python
 loop-mcp --version
-
-# Node
-npx loop-mcp
 ```
 
 ### Tools Not Available
