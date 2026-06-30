@@ -1,7 +1,5 @@
 """Tests for verification runner."""
 
-import asyncio
-from pathlib import Path
 
 import pytest
 

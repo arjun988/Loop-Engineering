@@ -1,10 +1,39 @@
 """State tracking and metrics for loops."""
 
+import hashlib
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Optional
 import aiofiles
+
+
+def _default_state(loop_name: str) -> dict:
+    """Return a fresh state document with the current schema."""
+    return {
+        "loop_name": loop_name,
+        "created_at": datetime.now().isoformat(),
+        "last_run": None,
+        "status": "initialized",
+        "runs": [],
+        "metrics": {
+            "total_runs": 0,
+            "prs_opened": 0,
+            "prs_merged": 0,
+            "acceptance_rate": 0.0,
+            "total_token_cost": 0.0,
+            "escalations": 0,
+            "goals_met": 0,
+        },
+        "lessons_learned": [],
+        "escalations": [],
+        "pending_runs": [],
+        "active_run": None,
+        # Stop-rule + budget bookkeeping (loop-engineering primitives)
+        "daily_runs": {},          # {"YYYY-MM-DD": count}
+        "last_failure_signature": None,
+        "policy_violations": [],
+    }
 
 
 class StateManager:
@@ -22,29 +51,26 @@ class StateManager:
         if state_file.exists():
             return f"⚠️ State for '{loop_name}' already exists"
         
-        initial_state = {
-            "loop_name": loop_name,
-            "created_at": datetime.now().isoformat(),
-            "last_run": None,
-            "status": "initialized",
-            "runs": [],
-            "metrics": {
-                "total_runs": 0,
-                "prs_opened": 0,
-                "prs_merged": 0,
-                "acceptance_rate": 0.0,
-                "total_token_cost": 0.0
-            },
-            "lessons_learned": [],
-            "escalations": [],
-            "pending_runs": [],
-            "active_run": None,
-        }
-        
         async with aiofiles.open(state_file, 'w') as f:
-            await f.write(json.dumps(initial_state, indent=2))
+            await f.write(json.dumps(_default_state(loop_name), indent=2))
         
         return f"✅ State initialized for '{loop_name}'"
+
+    @staticmethod
+    def _ensure_schema(state: dict, loop_name: str) -> dict:
+        """Backfill any keys missing from older state files (forward-compatible)."""
+        defaults = _default_state(loop_name)
+        for key, value in defaults.items():
+            state.setdefault(key, value)
+        for key, value in defaults["metrics"].items():
+            state["metrics"].setdefault(key, value)
+        return state
+
+    @staticmethod
+    def failure_signature(text: str) -> str:
+        """Stable short hash of a failure output, used for no-progress detection."""
+        normalized = " ".join((text or "").split())[:2000]
+        return hashlib.sha1(normalized.encode("utf-8", "replace")).hexdigest()[:12]
     
     async def _load_state(self, loop_name: str) -> dict:
         """Load state for a loop."""
@@ -56,7 +82,7 @@ class StateManager:
         
         async with aiofiles.open(state_file, 'r') as f:
             content = await f.read()
-            return json.loads(content)
+            return self._ensure_schema(json.loads(content), loop_name)
     
     async def _save_state(self, loop_name: str, state: dict):
         """Save state for a loop."""
@@ -82,12 +108,22 @@ class StateManager:
             f"**Status:** {state.get('status', 'Unknown')}\n",
             "**Metrics:**",
             f"- Total runs: {metrics.get('total_runs', 0)}",
+            f"- Goals met: {metrics.get('goals_met', 0)}",
+            f"- Escalations: {metrics.get('escalations', 0)}",
             f"- PRs opened: {metrics.get('prs_opened', 0)}",
             f"- PRs merged: {metrics.get('prs_merged', 0)}",
             f"- Acceptance rate: {metrics.get('acceptance_rate', 0):.1%}",
-            f"- Token cost: ${metrics.get('total_token_cost', 0):.2f}\n"
+            f"- Token cost: ${metrics.get('total_token_cost', 0):.2f}",
+            f"- Runs today: {self.runs_today(state)}\n",
         ]
-        
+
+        active = state.get("active_run")
+        if active:
+            output.append(
+                f"**Active run:** `{active.get('run_id')}` "
+                f"(attempt {active.get('attempt', 1)}/{active.get('max_attempts', 3)})\n"
+            )
+
         if runs:
             output.append("**Recent Runs (last 5):**")
             for run in runs[-5:]:
@@ -146,7 +182,14 @@ This will be included in future loop runs to avoid repeating mistakes."""
         status: str,
         token_cost: float = 0.0,
         verification_passed: bool = False,
+        goal_met: bool = False,
+        attempts: int = 1,
         pr_url: Optional[str] = None,
+        run_id: Optional[str] = None,
+        checker_verdict: Optional[str] = None,
+        hidden_verify_passed: Optional[bool] = None,
+        used_worktree: bool = False,
+        duration_seconds: Optional[float] = None,
     ) -> None:
         """Record a completed loop run and update metrics."""
         state = await self._load_state(loop_name)
@@ -157,7 +200,15 @@ This will be included in future loop runs to avoid repeating mistakes."""
             "summary": summary,
             "status": status,
             "verification_passed": verification_passed,
+            "goal_met": goal_met,
+            "attempts": attempts,
+            "token_cost": token_cost,
             "pr_url": pr_url,
+            "run_id": run_id,
+            "checker_verdict": checker_verdict,
+            "hidden_verify_passed": hidden_verify_passed,
+            "used_worktree": used_worktree,
+            "duration_seconds": duration_seconds,
         }
         state.setdefault("runs", []).append(run_entry)
         state["last_run"] = timestamp
@@ -166,6 +217,8 @@ This will be included in future loop runs to avoid repeating mistakes."""
         metrics = state.setdefault("metrics", {})
         metrics["total_runs"] = metrics.get("total_runs", 0) + 1
         metrics["total_token_cost"] = metrics.get("total_token_cost", 0.0) + token_cost
+        if goal_met:
+            metrics["goals_met"] = metrics.get("goals_met", 0) + 1
 
         if pr_url:
             metrics["prs_opened"] = metrics.get("prs_opened", 0) + 1
@@ -173,6 +226,25 @@ This will be included in future loop runs to avoid repeating mistakes."""
             merged = metrics.get("prs_merged", 0)
             metrics["acceptance_rate"] = merged / opened if opened > 0 else 0.0
 
+        # Count the run against today's budget.
+        today = datetime.now().strftime("%Y-%m-%d")
+        daily = state.setdefault("daily_runs", {})
+        daily[today] = daily.get(today, 0) + 1
+
+        await self._save_state(loop_name, state)
+
+    def runs_today(self, state: dict) -> int:
+        """Number of runs already recorded today (for daily budget caps)."""
+        today = datetime.now().strftime("%Y-%m-%d")
+        return state.get("daily_runs", {}).get(today, 0)
+
+    async def record_policy_violation(self, loop_name: str, detail: str) -> None:
+        """Record a policy gate violation."""
+        state = await self._load_state(loop_name)
+        state.setdefault("policy_violations", []).append({
+            "timestamp": datetime.now().isoformat(),
+            "detail": detail,
+        })
         await self._save_state(loop_name, state)
 
     async def record_pr(self, loop_name: str, pr_url: str) -> None:
@@ -193,6 +265,7 @@ This will be included in future loop runs to avoid repeating mistakes."""
             "timestamp": datetime.now().isoformat(),
             "reason": reason,
         })
+        state["metrics"]["escalations"] = state["metrics"].get("escalations", 0) + 1
         state["status"] = "escalated"
         await self._save_state(loop_name, state)
 
@@ -223,6 +296,8 @@ This will be included in future loop runs to avoid repeating mistakes."""
         run_id: str,
         branch: Optional[str],
         create_pr: bool,
+        worktree: Optional[str] = None,
+        max_attempts: int = 3,
     ) -> None:
         """Track an in-progress run started by the host agent."""
         state = await self._load_state(loop_name)
@@ -230,15 +305,40 @@ This will be included in future loop runs to avoid repeating mistakes."""
             "run_id": run_id,
             "started_at": datetime.now().isoformat(),
             "branch": branch,
+            "worktree": worktree,
             "create_pr": create_pr,
+            "attempt": 1,
+            "max_attempts": max_attempts,
         }
         state["status"] = "running"
         await self._save_state(loop_name, state)
+
+    async def bump_attempt(self, loop_name: str, failure_signature: Optional[str]) -> dict:
+        """Advance the active run to its next attempt and detect no-progress.
+
+        Returns a dict: {attempt, max_attempts, repeated_failure}.
+        """
+        state = await self._load_state(loop_name)
+        active = state.get("active_run") or {}
+        repeated = (
+            failure_signature is not None
+            and failure_signature == state.get("last_failure_signature")
+        )
+        active["attempt"] = active.get("attempt", 1) + 1
+        state["active_run"] = active
+        state["last_failure_signature"] = failure_signature
+        await self._save_state(loop_name, state)
+        return {
+            "attempt": active["attempt"],
+            "max_attempts": active.get("max_attempts", 3),
+            "repeated_failure": repeated,
+        }
 
     async def clear_active_run(self, loop_name: str) -> None:
         """Clear active run after completion."""
         state = await self._load_state(loop_name)
         state["active_run"] = None
+        state["last_failure_signature"] = None
         await self._save_state(loop_name, state)
 
     async def list_pending_runs(self) -> str:

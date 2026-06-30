@@ -2,7 +2,6 @@
 
 import asyncio
 from datetime import datetime
-from pathlib import Path
 from typing import Callable, Awaitable, Optional, Any
 
 from croniter import croniter

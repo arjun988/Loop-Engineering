@@ -1,6 +1,5 @@
 """Tests for cron scheduler."""
 
-from datetime import datetime
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest

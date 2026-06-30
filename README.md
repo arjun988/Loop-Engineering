@@ -12,15 +12,18 @@ Automate repetitive coding tasks with AI agents. Set up once, run forever.
 
 ## What is This?
 
-An MCP server that brings **loop engineering** to your AI coding workflow. Instead of manually prompting your AI agent for every task, you create loops that:
+An MCP server that brings **loop engineering** to your AI coding workflow. Instead of manually prompting your AI agent for every task, you design loops that prompt the agent for you. Each loop implements the canonical loop-engineering control system:
 
-- 🔄 **Run automatically** on schedule or triggers
-- 🧠 **Learn from mistakes** through state tracking
-- ✅ **Verify changes** before creating PRs
-- 📊 **Track metrics** (acceptance rates, token costs, time saved)
-- 🎯 **Escalate complexity** to humans when needed
+- 🔄 **Run automatically** on a schedule (the heartbeat)
+- 🔁 **Iterate until the goal is verifiably met** — act → verify → decide → repeat
+- 🧑‍🔧 **Maker/checker separation** — the agent makes changes; an *independent* checker gate decides whether the goal is met (the agent never grades its own homework)
+- 🛑 **Stop rules** — escalate to a human after N attempts or on a repeated failure (no Ralph-Wiggum runaway loops)
+- 🌳 **Worktree isolation** — each run gets its own git worktree so parallel loops never collide
+- 💸 **Budget caps** — daily run limits and a cumulative cost ceiling
+- 🧠 **Durable memory** — state file with run history and lessons learned that survives restarts
+- 🧪 **Suitability test** — a 4-condition pre-flight check so you only automate loop-shaped work
 
-**Think of it as:** GitHub Actions + AI Agents + Intelligent State Management
+**Think of it as:** GitHub Actions + AI Agents + an Intelligent, Self-Verifying Control Loop
 
 ---
 
@@ -252,19 +255,46 @@ Once installed, your AI agent gets these tools:
 
 | Tool | Purpose |
 |------|---------|
-| `create_loop` | Set up a new automated loop |
-| `start_loop` | Start/resume a loop |
+| `check_loop_suitability` | Run the 4-condition test *before* building a loop |
+| `create_loop` | Set up a new loop (checker gate, stop rules, budgets, isolation) |
+| `start_loop` | Start/resume a loop (activates the scheduler) |
 | `stop_loop` | Pause a loop |
+| `run_loop_now` | Begin a run — returns the brief for the host agent to execute |
+| `complete_loop_run` | Submit an attempt (the loop body): runs the checker, opens a PR, iterates, or escalates |
+| `list_pending_runs` | Show runs the scheduler queued for the next agent session |
+| `run_verification` | Run a loop's verification command on demand |
+| `set_goal_check` | Set/update the independent checker gate |
+| `configure_verification` | Set/update the maker self-check command |
 | `list_loops` | View all loops and their status |
 | `delete_loop` | Remove a loop permanently |
-| `add_skill` | Create custom skill templates |
-| `view_state` | Check loop history and metrics |
+| `add_skill` / `list_skills` | Manage reusable skill templates |
+| `view_state` | Check loop history, attempts, and metrics |
 | `add_lesson` | Record learnings for future runs |
 | `get_metrics` | See overall performance |
-| `run_loop_now` | Execute a loop on-demand |
-| `test_verification` | Test verification commands |
 
 Your AI agent uses these automatically when you ask for loop-related tasks.
+
+### How a run actually loops
+
+```
+run_loop_now ──► brief (goal, working dir, stop rule)
+      │
+      ▼
+  agent makes the smallest change
+      │
+      ▼
+complete_loop_run ──► maker self-check ──► independent checker gate
+      │                                          │
+      │                              ┌───────────┴───────────┐
+      │                          goal met?                 not yet
+      │                              │                       │
+      ▼                              ▼                       ▼
+   open PR & stop              open PR & stop      attempts left? ── yes ─► iterate (same run_id)
+                                                          │
+                                                          no / repeated failure
+                                                          ▼
+                                                   escalate to human
+```
 
 ---
 
@@ -316,9 +346,10 @@ loop-engineering/
 │   │       ├── loop_manager.py      # Loop CRUD
 │   │       ├── skill_manager.py     # Skill templates
 │   │       ├── state_manager.py     # State tracking
-│   │       ├── loop_executor.py     # Execution engine
-│   │       ├── scheduler.py         # Cron scheduler
-│   │       ├── verification_runner.py  # Test runner
+│   │       ├── loop_executor.py     # Control loop: isolation, checker gate, stop rules
+│   │       ├── scheduler.py         # Cron scheduler (the heartbeat)
+│   │       ├── suitability.py       # 4-condition loop suitability test
+│   │       ├── verification_runner.py  # Maker/checker gate runner
 │   │       ├── github_client.py     # GitHub integration
 │   │       └── worker.py            # Background worker
 │   └── tests/
@@ -336,6 +367,24 @@ loop-engineering/
 ```
 
 ---
+
+## Is This *True* Loop Engineering?
+
+Loop engineering (Addy Osmani / Codez / O'Reilly, 2026) defines a loop as a small
+control system with six parts. This server maps to all six:
+
+| Building block | What it means | How this server does it |
+|----------------|---------------|--------------------------|
+| **Automations** | The heartbeat that triggers runs | Cron scheduler (`scheduler.py`) queues runs on a schedule |
+| **Worktrees** | Isolated dirs so parallel agents don't collide | Each run gets its own `git worktree` (`isolation: "worktree"`) |
+| **Skills** | Reusable project knowledge read every run | `.loop/skills/*.md`, injected into every run brief |
+| **Connectors** | Tools to reach real systems | MCP itself + GitHub PR client |
+| **Sub-agents (maker/checker)** | A separate verifier grades the work | Independent `goal_check_command` gate, distinct from the maker's self-check |
+| **Memory/State** | Durable state across runs | `.loop/state/*.json` with runs, attempts, lessons, budgets |
+
+Plus the safety rules that separate a real loop from a cron job: an **iterate-until-goal**
+cycle, **stop rules** (max attempts + no-progress detection), **budget caps**, and a
+**4-condition suitability test** before you build at all.
 
 ## Pre-built Skill Templates
 
@@ -373,13 +422,34 @@ Maintains code quality automatically:
 "*/30 * * * *"   # Every 30 minutes
 ```
 
-### Verification Commands
+### Verification & the Maker/Checker Gate
+
+A loop has two gates. The **maker self-check** (`verification_command`) is the fast
+check the agent runs after its changes. The **independent checker**
+(`goal_check_command`) is a separate, objective command that decides whether the
+*goal* is actually met — so the agent that wrote the code is not the one grading it.
+A PR is opened only when both pass.
 
 ```json
 {
-  "verification_command": "npm test && npm run lint"
+  "verification_command": "npm test",
+  "goal_check_command": "npm run test:integration && npm run lint"
 }
 ```
+
+### Stop Rules & Budgets
+
+```json
+{
+  "max_attempts": 3,        // escalate to a human after 3 failed attempts
+  "max_runs_per_day": 24,   // daily run cap (heartbeat budget)
+  "cost_budget": 5.00,      // cumulative USD token-cost ceiling (0 = unlimited)
+  "isolation": "worktree"   // "worktree" (isolated, parallel-safe) or "branch"
+}
+```
+
+The loop also performs **no-progress detection**: if the same failure occurs twice
+in a row it escalates immediately rather than burning tokens on a dead end.
 
 ### Environment Variables
 

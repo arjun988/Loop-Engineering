@@ -1,7 +1,6 @@
 """Tests for loop logger."""
 
 import json
-from pathlib import Path
 
 from loop_engineering_mcp.logger import LoopLogger
 

@@ -35,21 +35,53 @@ class LoopManager:
         schedule: str,
         skill_instructions: str,
         goal: str,
-        verification_command: Optional[str] = None
+        verification_command: Optional[str] = None,
+        goal_check_command: Optional[str] = None,
+        max_attempts: int = 3,
+        max_runs_per_day: int = 24,
+        cost_budget: float = 0.0,
+        isolation: str = "worktree",
     ) -> str:
         """Create a new loop."""
         loops = await self._load_loops()
         
         if name in loops:
             return f"❌ Loop '{name}' already exists. Use a different name or delete the existing loop first."
-        
+
+        if isolation not in ("worktree", "branch"):
+            isolation = "worktree"
+
         loop_config = {
             "name": name,
             "description": description,
             "schedule": schedule,
             "skill_instructions": skill_instructions,
             "verification_command": verification_command or "echo 'No verification configured'",
+            # Independent checker gate (maker/checker separation). Defaults to the
+            # verification command so existing loops keep a single gate.
+            "goal_check_command": goal_check_command or "",
             "goal": goal,
+            # Stop rules + budget (loop-engineering safety primitives)
+            "max_attempts": max_attempts,
+            "max_runs_per_day": max_runs_per_day,
+            "cost_budget": cost_budget,
+            "isolation": isolation,
+            # Tier 1 autonomy fields
+            "hidden_verify_command": "",
+            "checker_enabled": True,
+            "checker_on_attempt": 2,
+            "risk_paths": [],
+            "forbidden_paths": [],
+            "merge_policy": "human",
+            "merge_risk_threshold": 85,
+            "max_diff_lines": 500,
+            "deploy_check": None,
+            "probes": [],
+            "policy": {
+                "deny_paths": [],
+                "deny_commands": [],
+                "max_files_per_run": 50,
+            },
             "status": "stopped",
             "created_at": datetime.now().isoformat(),
             "last_run": None
@@ -57,13 +89,18 @@ class LoopManager:
         
         loops[name] = loop_config
         await self._save_loops(loops)
-        
+
+        budget_line = f"${cost_budget:.2f}/run window" if cost_budget else "unlimited (set cost_budget to cap)"
         return f"""✅ Loop '{name}' created successfully!
 
 **Configuration:**
 - Schedule: {schedule}
 - Goal: {goal}
-- Verification: {verification_command or 'None configured'}
+- Verification (maker self-check): {verification_command or 'None configured'}
+- Goal check (independent checker): {goal_check_command or 'falls back to verification'}
+- Isolation: {isolation}
+- Stop rule: escalate after {max_attempts} attempts / on repeated failure
+- Budget: max {max_runs_per_day} runs/day, cost {budget_line}
 - Status: Stopped (use start_loop to activate)
 
 **Files created:**
@@ -133,8 +170,8 @@ Create your first loop with create_loop()
         
         output = ["📊 **Loop Status**\n"]
         
-        active_loops = [l for l in loops.values() if l["status"] == "active"]
-        stopped_loops = [l for l in loops.values() if l["status"] == "stopped"]
+        active_loops = [lp for lp in loops.values() if lp["status"] == "active"]
+        stopped_loops = [lp for lp in loops.values() if lp["status"] == "stopped"]
         
         if active_loops:
             output.append("**Active Loops:**")
@@ -143,14 +180,14 @@ Create your first loop with create_loop()
                 output.append(f"  Description: {loop['description']}")
                 output.append(f"  Schedule: {loop['schedule']}")
                 output.append(f"  Last run: {loop.get('last_run', 'Never')}")
-                output.append(f"  Status: 🟢 Active")
+                output.append("  Status: 🟢 Active")
         
         if stopped_loops:
             output.append("\n**Stopped Loops:**")
             for loop in stopped_loops:
                 output.append(f"\n{loop['name']}")
                 output.append(f"  Description: {loop['description']}")
-                output.append(f"  Status: ⏸️ Stopped")
+                output.append("  Status: ⏸️ Stopped")
         
         return "\n".join(output)
     
@@ -189,3 +226,30 @@ This action cannot be undone."""
 
 This command will run before any PR is opened to verify changes.
 If it fails (non-zero exit code), the PR won't be created."""
+
+    async def set_goal_check(self, loop_name: str, command: str) -> str:
+        """Configure the independent checker gate (goal_check_command)."""
+        loops = await self._load_loops()
+
+        if loop_name not in loops:
+            return f"❌ Loop '{loop_name}' not found."
+
+        loops[loop_name]["goal_check_command"] = command
+        await self._save_loops(loops)
+
+        return f"""✅ Independent checker configured for '{loop_name}'
+
+**Goal-check command:** {command}
+
+This runs only after the maker's verification passes, and is the authority that
+decides whether the goal is actually met (maker/checker separation). The PR is
+opened only if this gate also passes."""
+
+    async def update_config(self, loop_name: str, **kwargs) -> str:
+        """Patch arbitrary loop configuration keys."""
+        loops = await self._load_loops()
+        if loop_name not in loops:
+            return f"❌ Loop '{loop_name}' not found."
+        loops[loop_name].update(kwargs)
+        await self._save_loops(loops)
+        return f"✅ Updated '{loop_name}': {', '.join(kwargs.keys())}"
