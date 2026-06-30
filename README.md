@@ -90,19 +90,33 @@ Total: 0 minutes/day (runs while you sleep)
 
 ## Installation
 
-### Option 1: Python (Recommended - Easiest)
+Pick **one** of the following. Both work with the MCP config templates in [Setup](#setup-2-minutes) below.
 
-**Install once, run anywhere:**
+### Option 1: uv (Recommended)
+
+[Install uv](https://docs.astral.sh/uv/getting-started/installation/), then run the server from PyPI — no separate `pip install` needed:
+
+```bash
+uvx loop-mcp
+```
+
+Use the **uv** MCP template (`command`: `uvx`) in Step 1.
+
+### Option 2: pip
+
 ```bash
 pip install loop-mcp
 ```
 
-**Or use directly (no installation):**
+Verify it is on your PATH:
+
 ```bash
 loop-mcp
 ```
 
-### Option 2: From Source (Local Development)
+Use the **pip** MCP template (`command`: `loop-mcp`) in Step 1.
+
+### Option 3: From Source (Local Development)
 
 **Clone and install:**
 ```bash
@@ -123,7 +137,9 @@ pip install -e ".[dev]"
 
 #### For Cursor
 
-Create or edit `.cursor/mcp.json` in your project:
+Create or edit `.cursor/mcp.json` in your project.
+
+**uv** ([Option 1](#option-1-uv-recommended) — `uvx` fetches `loop-mcp` from PyPI automatically):
 
 ```json
 {
@@ -131,6 +147,18 @@ Create or edit `.cursor/mcp.json` in your project:
     "loop-engineering": {
       "command": "uvx",
       "args": ["loop-mcp"]
+    }
+  }
+}
+```
+
+**pip** ([Option 2](#option-2-pip) — after `pip install loop-mcp`):
+
+```json
+{
+  "mcpServers": {
+    "loop-engineering": {
+      "command": "loop-mcp"
     }
   }
 }
@@ -138,18 +166,7 @@ Create or edit `.cursor/mcp.json` in your project:
 
 #### For Kiro
 
-Create or edit `.kiro/settings/mcp.json`:
-
-```json
-{
-  "mcpServers": {
-    "loop-engineering": {
-      "command": "uvx",
-      "args": ["loop-mcp"]
-    }
-  }
-}
-```
+Create or edit `.kiro/settings/mcp.json` — same templates as Cursor above (**uv** or **pip**).
 
 #### For Claude Desktop
 
@@ -157,16 +174,7 @@ Create or edit `.kiro/settings/mcp.json`:
 
 **Windows:** Edit `%APPDATA%\Claude\claude_desktop_config.json`
 
-```json
-{
-  "mcpServers": {
-    "loop-engineering": {
-      "command": "uvx",
-      "args": ["loop-mcp"]
-    }
-  }
-}
-```
+Use the same **uv** or **pip** template as Cursor above.
 
 **Local development?** Use:
 ```json
